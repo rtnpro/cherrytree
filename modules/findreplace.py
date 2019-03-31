@@ -29,6 +29,7 @@ import cons
 import menus
 import support
 import config
+import unicodedata
 
 
 def dialog_date_select(parent_win, title, curr_time):
@@ -590,6 +591,8 @@ class FindReplace:
     def find_pattern(self, tree_iter, text_buffer, pattern, start_iter, forward, all_matches):
         """Returns (start_iter, end_iter) or (None, None)"""
         text = unicode(text_buffer.get_text(*text_buffer.get_bounds()), cons.STR_UTF8, cons.STR_IGNORE)
+        if unicodedata.normalize('NFKD', pattern) == pattern:
+            text = re.sub(u'[\u0301-\u0325]', '', unicodedata.normalize('NFKD', text))
         if not self.search_replace_dict['reg_exp']: # NOT REGULAR EXPRESSION
             pattern = re.escape(pattern) # backslashes all non alphanum chars => to not spoil re
             if self.search_replace_dict['whole_word']: # WHOLE WORD
